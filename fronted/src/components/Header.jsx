@@ -1,19 +1,16 @@
-import { Navbar,Button,Modal } from 'flowbite-react';
+import { Navbar,Button } from 'flowbite-react';
 import waste_wizard_logo from '../assets/logo.png';
-import { Link, useLocation } from 'react-router-dom';
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { aboutToggle } from '../redux/about/aboutSlice';
+import About from '../pages/About';
 
 
 const Header = () => {
-    // const path = useLocation().pathname;
     const dispatch = useDispatch()
 
-    // const data = useSelector(state=>state.about.about)
-    // console.log(data)
     return (
-        <Navbar className='border-b-2'>
+        <Navbar className='border-b-2 sticky top-0 left-0 z-50'>
             <Link to='/'>
                 <img className='mr-3 h-16 sm:h-20' src={waste_wizard_logo} alt="waste_wizard_logo" />
             </Link>
@@ -21,6 +18,7 @@ const Header = () => {
             <Navbar.Collapse>
                 <Navbar.Link active as={'div'}>
                     <Button onClick={()=>dispatch(aboutToggle(true))} outline gradientDuoTone='greenToBlue'>About</Button>
+                    <About/>
                 </Navbar.Link>
             </Navbar.Collapse>
         </Navbar>

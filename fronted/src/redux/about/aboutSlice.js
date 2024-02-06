@@ -2,6 +2,7 @@ import {createSlice} from '@reduxjs/toolkit';
 
 const initialState={
     about:false,
+    userType:"",
 }
 const aboueSlice = createSlice({
     name:'about',
@@ -9,9 +10,12 @@ const aboueSlice = createSlice({
     reducers:{
         aboutToggle:(state,action)=>{
             state.about = action.payload
+        },
+        selectUserType:(state,action)=>{
+            state.userType = action.payload
         }
     }
 });
 
-export const {aboutToggle} = aboueSlice.actions;
+export const {aboutToggle,selectUserType} = aboueSlice.actions;
 export default aboueSlice.reducer;
