@@ -14,7 +14,7 @@ app.listen(process.env.PORT ,()=>{
     console.log(`server run with ${process.env.PORT}`)
 })
 
-app.use('/api',userRouter)
+app.use('/api',userRouter);
 
 app.use((err,req,res,next)=>{
     const statusCode = err.statusCode || 500;

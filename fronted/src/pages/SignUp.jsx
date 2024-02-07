@@ -1,12 +1,13 @@
 import { FloatingLabel,Button, Alert, Spinner } from 'flowbite-react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { isValid_Aadhaar_Number, isValid_EmailID, isValid_Password, isValid_Phonenumber, isValid_VoterId } from '../utils/validation';
 import { useDispatch, useSelector } from "react-redux";
-import { userError } from '../redux/user/userSlice';
+import { userError,userStart, userSuccess } from '../redux/user/userSlice';
 
 const SignUp = () => {
   const dispatch = useDispatch()
+  const navigation = useNavigate()
   const {loading,error:errorMessage} = useSelector(state=>state.user)
   const [formData,setFormData]=useState({
     aadharID:"",
@@ -29,7 +30,7 @@ const SignUp = () => {
   const formHandling = async(e)=>{
     e.preventDefault();
 
-    // dispatch(userStart())
+    dispatch(userStart())
     
     if(isValid_Aadhaar_Number(formData.aadharID) !== true){
       return dispatch(userError(isValid_Aadhaar_Number(formData.aadharID)))
@@ -54,9 +55,20 @@ const SignUp = () => {
     }
 
     try {
-      console.log(formData)
+      const req = await fetch('/api/signup',{method:'POST',headers:{"Content-Type": "application/json",},body:JSON.stringify(formData)});
+      const data = await req.json()
+
+      // console.log(data)
+      
+      if(data.success === false){
+        return dispatch(userError(data.message))
+      }else{
+        dispatch(userSuccess(data))
+        navigation('/sign-in')
+      }
+
     } catch (error) {
-      // dispatch(userError(error.message))
+      dispatch(userError(error.message))
     }
   }
   return (

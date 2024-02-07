@@ -1,6 +1,6 @@
 import { FloatingLabel,Button, Spinner } from 'flowbite-react';
 import { Link } from 'react-router-dom';
-import {userError, userStart} from "../redux/user/userSlice";
+import {userError, userStart, userSuccess} from "../redux/user/userSlice";
 import { isValid_Aadhaar_Number, isValid_Password } from '../utils/validation';
 import { useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
@@ -25,7 +25,7 @@ const SignIn = () => {
 
   const formHandling = async(e)=>{
     e.preventDefault();
-    // dispatch(userStart())
+    dispatch(userStart())
     
     if(isValid_Aadhaar_Number(formData.aadharID) !== true){
       return dispatch(userError(isValid_Aadhaar_Number(formData.aadharID)))
@@ -36,12 +36,20 @@ const SignIn = () => {
     }
 
     try {
-      
+      const req = await fetch('/api/signin',{method:'POST',headers:{"Content-Type": "application/json",},body:JSON.stringify(formData)});
+      const data = await req.json()
+
+      if(data.success === false){
+        return dispatch(userError(data.message))
+      }else{
+        console.log(data)
+        dispatch(userSuccess(data))
+      }
     } catch (error) {
-      // dispatch(userError(error.message))
+      dispatch(userError(error.message))
     }
   }
-  // console.log(errorMessage)
+  
   return (
     <section className='w-full h-full font-sans p-10 flex justify-center items-center flex-col'>
       <div className='sm:w-full max-h-fit sm:h-full md:w-3/12 p-5 my-20'>
