@@ -1,4 +1,4 @@
-import { FloatingLabel,Button } from 'flowbite-react';
+import { FloatingLabel,Button, Spinner } from 'flowbite-react';
 import { Link } from 'react-router-dom';
 import {userError, userStart} from "../redux/user/userSlice";
 import { isValid_Aadhaar_Number, isValid_Password } from '../utils/validation';
@@ -9,7 +9,7 @@ import { Alert } from 'flowbite-react';
 
 const SignIn = () => {
   const dispatch = useDispatch()
-  const {error:errorMessage} = useSelector(state=>state.user)
+  const {loading,error:errorMessage} = useSelector(state=>state.user)
   const [formData,setFormData]=useState({
     aadharID:"",
     password:""
@@ -54,8 +54,15 @@ const SignIn = () => {
             <FloatingLabel variant="standard" label="Enter Password" type="password" size="md" name="password" value={formData.password} onChange={formValueHandle}/>
           </div>
           
-          <Button outline gradientDuoTone="redToYellow" type='submit'>
-            LOGIN
+          <Button outline gradientDuoTone="redToYellow" type='submit' disabled={loading}>
+            {
+              loading?(
+                <>
+                <Spinner size="sm"/>
+                <span className='pl-3'>Loading...</span>
+                </>
+              ):"SIGNIN"
+            }
           </Button>
         </form>
         <Link to='/sign-up' className='underline text-sm text-center text-slate-500'>No account yet.. Register Citizen</Link>

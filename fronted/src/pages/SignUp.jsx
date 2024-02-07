@@ -1,4 +1,4 @@
-import { FloatingLabel,Button, Alert } from 'flowbite-react';
+import { FloatingLabel,Button, Alert, Spinner } from 'flowbite-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { isValid_Aadhaar_Number, isValid_EmailID, isValid_Password, isValid_Phonenumber, isValid_VoterId } from '../utils/validation';
@@ -7,7 +7,7 @@ import { userError } from '../redux/user/userSlice';
 
 const SignUp = () => {
   const dispatch = useDispatch()
-  const {error:errorMessage} = useSelector(state=>state.user)
+  const {loading,error:errorMessage} = useSelector(state=>state.user)
   const [formData,setFormData]=useState({
     aadharID:"",
     voterID:"",
@@ -61,14 +61,14 @@ const SignUp = () => {
   }
   return (
     <section className='w-full h-full font-sans p-5 flex justify-center items-center flex-col'>
+
+    <div className='sm:w-full max-h-fit sm:h-full md:w-3/12 p-5'>
       {/* alert */}
-      <div>
+      <div className='my-5'>
       {errorMessage && <Alert className='mt-5 text-sm' color='failure'>
       {errorMessage}
       </Alert>}
       </div>
-
-    <div className='sm:w-full max-h-fit sm:h-full md:w-3/12 p-5'>
       <form onSubmit={formHandling} className='flex flex-col gap-3 mb-4'>
         <h2 className='text-3xl mb-3 text-slate-500'>Registration</h2>
         <div className='mb-2'>
@@ -93,8 +93,15 @@ const SignUp = () => {
           <FloatingLabel variant="standard" label="Enter mobile number" type="number" size="md" name="phone_number" value={formData.phone_number} onChange={formValueHandle}/>
         </div>
         
-        <Button outline gradientDuoTone="redToYellow" type='submit'>
-          REGISTER
+        <Button outline gradientDuoTone="redToYellow" type='submit' disabled={loading}>
+          {
+          loading?(
+            <>
+            <Spinner size="sm"/>
+            <span className='pl-2'>Loading...</span>
+            </>
+          ):"REGISTER"
+          }
         </Button>
       </form>
       <Link to="/sign-in" className='underline text-sm text-slate-500'>Do have already account?</Link>
