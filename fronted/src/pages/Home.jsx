@@ -1,20 +1,28 @@
 import { Button } from 'flowbite-react'
 import React, { useState } from 'react';
+import {useNavigate} from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { selectUserType } from '../redux/about/aboutSlice';
-import { userError, userStart } from '../redux/user/userSlice';
+// import { userError, userStart } from '../redux/user/userSlice';
 
 const Home = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const selectOption = useSelector(state=>state.about.userType)
-  // const userCheck = useSelector(state.user.user)
+  const {currentUser} = useSelector(state=>state.user)
 
-  const buttonHandler = async() => {
-    dispatch(userStart())
-    try {
-      console.log(selectOption)
-    } catch (error) {
-      dispatch(userError(error))
+  const buttonHandler = () => {
+    if(!currentUser){
+      if(selectOption && selectOption === 'citizen' || selectOption && selectOption === 'incharge'){
+        navigate('/sign-in')
+      }
+    }else{
+      if(selectOption && selectOption === 'citizen'){
+        navigate('/citizen')
+      }
+      if(selectOption && selectOption === 'incharge'){
+        navigate('/incharge')
+      }
     }
   }
   return (

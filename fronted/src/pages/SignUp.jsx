@@ -8,7 +8,10 @@ import { userError,userStart, userSuccess } from '../redux/user/userSlice';
 const SignUp = () => {
   const dispatch = useDispatch()
   const navigation = useNavigate()
-  const {loading,error:errorMessage} = useSelector(state=>state.user)
+  const {error:errorMessage} = useSelector(state=>state.user);
+  const [errorShowing,setErrorShowing]=useState(null);
+  const [loading,setLoading]=useState(false);
+  const {userType} = useSelector(state=>state.about)
   const [formData,setFormData]=useState({
     aadharID:"",
     voterID:"",
@@ -17,6 +20,7 @@ const SignUp = () => {
     re_password:"",
     email:"",
     phone_number:"",
+    role:userType,
   })
 
   const formValueHandle = (e) => {
@@ -29,46 +33,63 @@ const SignUp = () => {
 
   const formHandling = async(e)=>{
     e.preventDefault();
-
-    dispatch(userStart())
     
     if(isValid_Aadhaar_Number(formData.aadharID) !== true){
-      return dispatch(userError(isValid_Aadhaar_Number(formData.aadharID)))
+      // return dispatch(userError(isValid_Aadhaar_Number(formData.aadharID)))
+      return setErrorShowing(isValid_Aadhaar_Number(formData.aadharID))
     }
     if(isValid_VoterId(formData.voterID) !== true){
-      return dispatch(userError(isValid_VoterId(formData.voterID)))
+      // return dispatch(userError(isValid_VoterId(formData.voterID)))
+      return setErrorShowing(isValid_VoterId(formData.voterID))
     }
     if(formData.username.length < 1){
-      return dispatch(userError("Please enter valide username"))
+      // return dispatch(userError("Please enter valide username"))
+      return setErrorShowing("Please enter valide username")
     }
      if(isValid_Password(formData.password) !== true){
-      return dispatch(userError(isValid_Password(formData.password)))
+      // return dispatch(userError(isValid_Password(formData.password)))
+      return setErrorShowing(isValid_Password(formData.password))
     }
     if(formData.password !== formData.re_password){
-      return dispatch(userError("Please enter valid password"))
+      // return dispatch(userError("Please enter valid password"))
+      return setErrorShowing("Please enter valid password")
     }
     if(isValid_Phonenumber(formData.phone_number) !== true){
-      return dispatch(userError(isValid_Phonenumber(formData.phone_number)))
+      // return dispatch(userError(isValid_Phonenumber(formData.phone_number)))
+      return setErrorShowing(isValid_Phonenumber(formData.phone_number))
     }
     if(isValid_EmailID(formData.email) !== true ){
-      return dispatch(userError(isValid_EmailID(formData.email)))
+      // return dispatch(userError(isValid_EmailID(formData.email)))
+      return setErrorShowing(isValid_EmailID(formData.email))
     }
 
     try {
-      const req = await fetch('/api/signup',{method:'POST',headers:{"Content-Type": "application/json",},body:JSON.stringify(formData)});
-      const data = await req.json()
+      dispatch(userStart())
+      setLoading(true);
+      const res = await fetch('/api/signup',{method:'POST',headers:{"Content-Type": "application/json",},body:JSON.stringify(formData)});
+      const data = await res.json()
 
-      // console.log(data)
-      
-      if(data.success === false){
-        return dispatch(userError(data.message))
+      if(!res.ok){
+        dispatch(userError(data.message))
       }else{
+        setErrorShowing(null)
+        setLoading(false);
         dispatch(userSuccess(data))
+        setFormData({
+          aadharID:"",
+          voterID:"",
+          username:"",
+          password:"",
+          re_password:"",
+          email:"",
+          phone_number:"",
+        })
         navigation('/sign-in')
       }
 
     } catch (error) {
       dispatch(userError(error.message))
+      setLoading(false);
     }
   }
   return (
@@ -79,6 +100,9 @@ const SignUp = () => {
       <div className='my-5'>
       {errorMessage && <Alert className='mt-5 text-sm' color='failure'>
       {errorMessage}
+      </Alert>}
+      {errorShowing && <Alert className='mt-5 text-sm' color='failure'>
+      {errorShowing}
       </Alert>}
       </div>
       <form onSubmit={formHandling} className='flex flex-col gap-3 mb-4'>
@@ -115,6 +139,7 @@ const SignUp = () => {
           ):"REGISTER"
           }
         </Button>
+        {/* <Button outline gradientDuoTone="redToYellow" type='submit'>REGISTER</Button> */}
       </form>
       <Link to="/sign-in" className='underline text-sm text-slate-500'>Do have already account?</Link>
     </div>

@@ -1,5 +1,5 @@
 import { FloatingLabel,Button, Spinner } from 'flowbite-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {userError, userStart, userSuccess} from "../redux/user/userSlice";
 import { isValid_Aadhaar_Number, isValid_Password } from '../utils/validation';
 import { useState } from 'react';
@@ -9,12 +9,13 @@ import { Alert } from 'flowbite-react';
 
 const SignIn = () => {
   const dispatch = useDispatch()
-  const {loading,error:errorMessage} = useSelector(state=>state.user)
+  const navigation = useNavigate()
+  const {currentUser,error:errorMessage} = useSelector(state=>state.user);
+  const [loading,setLoading]=useState(false);
   const [formData,setFormData]=useState({
     aadharID:"",
-    password:""
+    password:"",
   })
-
   const formValueHandle = (e) => {
     const {name,value}=e.target;
     setFormData({
@@ -25,7 +26,6 @@ const SignIn = () => {
 
   const formHandling = async(e)=>{
     e.preventDefault();
-    dispatch(userStart())
     
     if(isValid_Aadhaar_Number(formData.aadharID) !== true){
       return dispatch(userError(isValid_Aadhaar_Number(formData.aadharID)))
@@ -36,20 +36,29 @@ const SignIn = () => {
     }
 
     try {
-      const req = await fetch('/api/signin',{method:'POST',headers:{"Content-Type": "application/json",},body:JSON.stringify(formData)});
-      const data = await req.json()
+      dispatch(userStart());
+      setLoading(true)
 
-      if(data.success === false){
-        return dispatch(userError(data.message))
+      const res = await fetch('/api/signin',{method:'POST',headers:{"Content-Type": "application/json",},body:JSON.stringify(formData)});
+      const data = await res.json()
+
+      if(!res.ok){
+        return dispatch(userError(res.message))
       }else{
-        console.log(data)
         dispatch(userSuccess(data))
+        setLoading(false)
+        setFormData({
+          aadharID:"",
+          password:""
+        })
+        navigation(`/${currentUser.role}`)
       }
+
     } catch (error) {
       dispatch(userError(error.message))
+      setLoading(false)
     }
   }
-  
   return (
     <section className='w-full h-full font-sans p-10 flex justify-center items-center flex-col'>
       <div className='sm:w-full max-h-fit sm:h-full md:w-3/12 p-5 my-20'>

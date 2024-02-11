@@ -22,7 +22,7 @@ export const isValid_Password = (password) =>{
 
     let regex =/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!^%*?&]{8,15}$/;
     if (regex.test(password) !== true) {
-      return password + " password is strong"
+      return password + "Please enter correct password"
     }else{
         return true
     }

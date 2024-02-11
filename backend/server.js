@@ -1,7 +1,9 @@
 import express from "express";
 import dbConnection from "./dbConnection/db.js"
-import userRouter from "./router/userRouter.js";
+import authUser from "./router/authUserRouter.js";
+import userRoute from './router/userRoute.js';
 import dotenv from 'dotenv';
+import cookieParser from "cookie-parser";
 dotenv.config()
 const app = express();
 
@@ -9,12 +11,14 @@ const app = express();
 dbConnection();
 
 app.use(express.json());
+app.use(cookieParser())
 
 app.listen(process.env.PORT ,()=>{
     console.log(`server run with ${process.env.PORT}`)
 })
 
-app.use('/api',userRouter);
+app.use('/api',authUser);
+app.use('/api/post',userRoute)
 
 app.use((err,req,res,next)=>{
     const statusCode = err.statusCode || 500;
