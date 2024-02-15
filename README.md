@@ -1,1 +1,0 @@
-# WASTE_WIZARD app
