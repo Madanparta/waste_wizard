@@ -38,12 +38,10 @@ export const signIn = async(req,res,next)=>{
         }
 
         const validUser = await userModel.findOne({aadharID})
-        console.log(validUser)
         if(!validUser){
             return next(errorHandler(404,"user not found."));
         }
 
-        
         const validPassword = bcrypt.compareSync(password,validUser.password);
 
         if(!validPassword){
@@ -56,11 +54,35 @@ export const signIn = async(req,res,next)=>{
 
         const {password:pass,re_password:re_pas,...rest} =validUser._doc;
 
-        res.status(200).cookie('access_token',token,{
-            httpOnly:true,
-        }).json(rest)
+        res.status(200).json({rest,token})
 
     } catch (error) {
         next(error)
+    }
+}
+
+export const signOut = async (req,res,next)=>{
+    if(!req.user){
+        return next(errorHandler(401,'User not authentication!'))
+    }
+    try {
+        res.status(200).json({rest:'',token:''});
+        res.status(200).json({ message: "Login successful" });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getUsers = async(req,res,next)=>{
+    if(!req.user){
+        return next(errorHandler(401,'User not authentication!'))
+    }
+    try {
+        const users = await userModel.find({});
+        res.status(200).json({
+            users:users
+        });
+    } catch (error) {
+        next(error);
     }
 }

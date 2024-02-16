@@ -18,8 +18,22 @@ const complaintSlice = createSlice({
         uploadsComplaintFailure:(state,action)=>{
             state.error=action.payload;
         },
+        getAllComplaintSuccss:(state,action)=>{
+            state.complaints=action.payload;
+            state.error=null;
+        },
+        getAllComplaintFailure:(state,action)=>{
+            state.error=action.payload;
+        },
+        searchComplaintSuccss:(state,action)=>{
+            state.complaints=action.payload;
+            state.error=null;
+        },
+        searchComplaintFailure:(state,action)=>{
+            state.error=action.payload;
+        },
     }
 })
 
-export const {uploadsComplaintStart,uploadsComplaintSuccss,uploadsComplaintFailure} = complaintSlice.actions;
+export const {uploadsComplaintStart,uploadsComplaintSuccss,uploadsComplaintFailure,getAllComplaintSuccss,getAllComplaintFailure,searchComplaintSuccss,searchComplaintFailure} = complaintSlice.actions;
 export default complaintSlice.reducer;

@@ -2,6 +2,8 @@ import { Button } from 'flowbite-react'
 import {useNavigate} from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { selectUserType } from '../redux/about/aboutSlice';
+import { useEffect } from 'react';
+import { getAllUsersError, getAllUsersSuccess } from '../redux/user/userSlice';
 
 const DashBord = () => {
     const dispatch = useDispatch()
@@ -23,6 +25,25 @@ const DashBord = () => {
         }
       }
     }
+
+    useEffect(()=>{
+      const getAllUsers = async()=>{
+        try {
+          const res = await fetch('http://localhost:8080/api/users',{method:'GET',headers:{"Content-Type": "application/json",'x-access-token':currentUser.token}});
+          const data = await res.json();
+
+          if(!res.ok){
+            dispatch(getAllUsersError(res.message))
+          }else{
+            dispatch(getAllUsersSuccess(data.users));
+          }
+        } catch (error) {
+          dispatch(getAllUsersError(error.message))
+        }
+      }
+
+      getAllUsers()
+    },[])
     return (
         <section className='h-[75vh] w-full flex justify-center items-center'>
           <div className='mt-10 ms-2'>

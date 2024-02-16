@@ -10,7 +10,7 @@ import { Alert } from 'flowbite-react';
 const SignIn = () => {
   const dispatch = useDispatch()
   const navigation = useNavigate()
-  const {currentUser,error:errorMessage} = useSelector(state=>state.user);
+  const {error:errorMessage} = useSelector(state=>state.user);
   const [loading,setLoading]=useState(false);
   const [formData,setFormData]=useState({
     aadharID:"",
@@ -38,20 +38,22 @@ const SignIn = () => {
     try {
       dispatch(userStart());
       setLoading(true)
+      // 'x-access-token':token
 
       const res = await fetch('http://localhost:8080/api/signin',{method:'POST',headers:{"Content-Type": "application/json",},body:JSON.stringify(formData)});
       const data = await res.json()
-
+      
       if(!res.ok){
         return dispatch(userError(res.message))
       }else{
         dispatch(userSuccess(data))
+        console.log(data);
         setLoading(false)
         setFormData({
           aadharID:"",
           password:""
         })
-        navigation(`/${currentUser.role}`)
+        navigation(`/${data.rest.role}`)
       }
 
     } catch (error) {

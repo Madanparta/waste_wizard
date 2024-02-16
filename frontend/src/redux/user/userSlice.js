@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     currentUser:null,
     error:null,
+    getUsers:null
 }
 const userSlice = createSlice({
     name:"user",
@@ -18,9 +19,14 @@ const userSlice = createSlice({
         userError:(state,action)=>{
             state.error=action.payload;
         },
-        
+        getAllUsersSuccess:(state,action)=>{
+            state.getAllUsers=action.payload;
+        },
+        getAllUsersError:(state,action)=>{
+            state.getAllUsers=action.payload;
+        }
     }
 })
 
-export const {userStart,userSuccess,userError} = userSlice.actions;
+export const {userStart,userSuccess,userError,getAllUsersSuccess,getAllUsersError} = userSlice.actions;
 export default userSlice.reducer;
