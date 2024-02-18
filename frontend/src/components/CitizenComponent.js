@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllComplaintFailure, getAllComplaintSuccss, searchComplaintFailure, uploadsComplaintFailure, uploadsComplaintStart, uploadsComplaintSuccss } from '../redux/user/complaintSlice';
 import axios from 'axios';
+import { getAllUsersError, getAllUsersSuccess } from '../redux/user/userSlice';
 
 const CitizenComponent = () => {
     const dispatch = useDispatch()
@@ -98,6 +99,8 @@ const CitizenComponent = () => {
         }
     }
 
+
+
     useEffect(()=>{
         if(!currentUser.token){
             navigator('/sign-in')
@@ -120,6 +123,26 @@ const CitizenComponent = () => {
             dispatch(uploadsComplaintFailure(error.message));
         }
     }
+
+
+    useEffect(()=>{
+        const getAllUsers = async()=>{
+          try {
+            const res = await fetch('http://localhost:8080/api/users',{method:'GET',headers:{"Content-Type": "application/json",'x-access-token':currentUser.token}});
+            const data = await res.json();
+  
+            if(!res.ok){
+              dispatch(getAllUsersError(res.message))
+            }else{
+              dispatch(getAllUsersSuccess(data.users));
+            }
+          } catch (error) {
+            dispatch(getAllUsersError(error.message))
+          }
+        }
+  
+        getAllUsers()
+      },[]);
 
     const compSearchHandler = () => {
         // console.log(searchComp)

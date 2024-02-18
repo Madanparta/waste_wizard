@@ -43,7 +43,7 @@ const DashBord = () => {
       }
 
       getAllUsers()
-    },[currentUser.token]);
+    },[]);
     return (
         <section className='h-[75vh] w-full flex justify-center items-center'>
           <div className='mt-10 ms-2'>
