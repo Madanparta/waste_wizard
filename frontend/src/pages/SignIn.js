@@ -11,6 +11,7 @@ const SignIn = () => {
   const dispatch = useDispatch()
   const navigation = useNavigate()
   const {error:errorMessage} = useSelector(state=>state.user);
+  const selectOption = useSelector(state=>state.about.userType)
   const [loading,setLoading]=useState(false);
   const [formData,setFormData]=useState({
     aadharID:"",
@@ -53,7 +54,7 @@ const SignIn = () => {
           aadharID:"",
           password:""
         })
-        navigation(`/${data.rest.role}`)
+        navigation(`/${selectOption}`)
       }
 
     } catch (error) {

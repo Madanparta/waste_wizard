@@ -36,7 +36,7 @@ const Header = () => {
             </Link>
 
             <Navbar.Collapse>
-                {currentUser && <div className="flex md:order-2 ml-5">
+                {currentUser.rest && <div className="flex md:order-2 ml-5">
                     <Dropdown arrowIcon={false} inline label={<Avatar src="" alt='profile_imge' className='border-2 rounded-full'  rounded/>} >
                         <Dropdown.Header>
                             <span className="block text-sm">{currentUser.rest.username}</span>

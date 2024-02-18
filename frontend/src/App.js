@@ -6,6 +6,11 @@ import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import DashBord from './pages/DashBord';
 import CitizenComponent from './components/CitizenComponent';
+import InchargeComponent from './components/InchargeComponent';
+import InchargeOpenComp from './pages/InchargeOpenComp';
+import InchargePostNews from './pages/InchargePostNews';
+import InchargeReports from './pages/InchargeReports';
+import PrivateRoute from './components/PrivateRoute';
 
 const App = () => {
   return (
@@ -18,7 +23,15 @@ const App = () => {
       <Route path='/sign-in' element={<SignIn/>}/>
       <Route path='/sign-up' element={<SignUp/>}/>
 
-      <Route path='/citizen' element={<CitizenComponent/>}/>
+      <Route element={<PrivateRoute/>}>
+        <Route path='/citizen' element={<CitizenComponent/>}/>
+        <Route path='/incharge' element={<InchargeComponent/>}/>
+
+        <Route path='/incharge/openComp' element={<InchargeOpenComp/>}/>
+        <Route path='/incharge/news' element={<InchargePostNews/>}/>
+        <Route path='/incharge/reports' element={<InchargeReports/>}/>
+      </Route>
+
     </Routes>
 
     <FooterComponent/>

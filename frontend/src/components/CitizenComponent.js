@@ -126,7 +126,6 @@ const CitizenComponent = () => {
         const result = complaints.length > 0 && complaints.filter((comp) => comp.ward_number.toLowerCase().includes(searchComp.toLowerCase()))
         setSearchResult(result)
     }
-    console.log(searchResult)
     return (
         <div className='min-h-[77vh] w-full flex justify-center items-center'>
             {/* className='w-full h-full flex flex-row sm:flex-col' */}
